@@ -1,16 +1,19 @@
 import admin from "firebase-admin";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import dotenv from "dotenv"; // Importando dotenv
 import serviceAccount from "./serviceAccountKey.json" assert { type: "json" };
 
+dotenv.config(); // Carrega as variáveis de ambient
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAJMzjpaceImv6Iu63oSKPa4ddlNu-DWAo",
-  authDomain: "gps-tracker-9f672.firebaseapp.com",
-  projectId: "gps-tracker-9f672",
-  storageBucket: "gps-tracker-9f672.firebasestorage.app",
-  messagingSenderId: "1040387708454",
-  appId: "1:1040387708454:web:9024b595db6e036c1df8e7",
-  measurementId: "G-R3RTX6DYC2"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
 // 🔹 Inicializa Firebase Client SDK (Frontend)

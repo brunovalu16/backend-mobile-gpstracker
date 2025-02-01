@@ -1,0 +1,22 @@
+# Ignorar arquivo .env que contém variáveis sensíveis
+.env
+
+# Ignorar o diretório node_modules
+node_modules/
+
+# Ignorar arquivos do sistema (Windows, macOS, etc)
+.DS_Store
+Thumbs.db
+
+# Ignorar logs de erros
+*.log
+
+# Ignorar arquivos de build temporários ou de configuração de IDE
+*.vscode/
+*.idea/
+
+# Ignorar arquivos de dependências gerados
+package-lock.json
+yarn.lock
+serviceAccountKey.json
+
