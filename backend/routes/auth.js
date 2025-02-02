@@ -1,9 +1,8 @@
 import express from "express";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { admin, adminDb } from "../firebaseConfig.js"; // 🔹 Importando Firestore do Admin SDK
 
 const router = express.Router();
-const auth = getAuth();
+//const auth = getAuth();
 
 router.post("/register", async (req, res) => {
   console.log("Recebendo dados no backend:", req.body);
@@ -56,17 +55,29 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// 🔹 Login usando o Firebase Admin SDK corretamente
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "O campo email é obrigatório." });
+    }
 
-    res.status(200).json({ uid: user.uid, email });
+    // Verifica se o usuário existe no Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    if (!userRecord) {
+      return res.status(400).json({ error: "Usuário não encontrado." });
+    }
+
+    // Cria um token customizado
+    const customToken = await admin.auth().createCustomToken(userRecord.uid);
+
+    res.status(200).json({ uid: userRecord.uid, email: userRecord.email, token: customToken });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 export default router;
