@@ -2,29 +2,24 @@ import express from "express";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-import admin from "firebase-admin"; // Importando Firebase Admin diretamente
-
-// 📌 🔹 Importando as rotas de autenticação e GPS
-import authRoutes from "./routes/auth.js"; // Importando as rotas corretamente
-import gpsRoutes from "./routes/gps.js"; // Corrigindo a importação da rota GPS
+import admin from "firebase-admin";
+import authRoutes from "./routes/auth.js";
+import gpsRoutes from "./routes/gps.js";
 import fs from "fs";
 
-// 🔹 Definição do app e servidor antes de usar `app.use()`
+// 🔹 Inicialização do app e servidor
 const app = express();
-
-app.use(express.json()); //✅ Garante que req.body seja processado corretamente
-
-// 🔹 Adicionando rotas depois da inicialização do `app`
-app.use("/gps", gpsRoutes);
-app.use("/auth", authRoutes);
-
-
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 app.use(cors());
+app.use(express.json());
 
-// 🔹 Lendo o arquivo de credenciais do Firebase Admin SDK
+// 🔹 Rotas
+app.use("/gps", gpsRoutes);
+app.use("/auth", authRoutes);
+
+// 🔹 Lendo credenciais do Firebase
 const serviceAccountPath = "./serviceAccountKey.json";
 if (!fs.existsSync(serviceAccountPath)) {
   console.error("❌ ERRO: Arquivo serviceAccountKey.json não encontrado!");
@@ -34,18 +29,15 @@ if (!fs.existsSync(serviceAccountPath)) {
 const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
 console.log("✅ Arquivo serviceAccountKey.json lido com sucesso!");
 
-// 🔹 Inicializando Firebase Admin SDK com as credenciais de serviço
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
-  console.log("✅ Firebase Admin SDK inicializado!");
+  console.log("✅ Firebase Admin SDK inicializado com sucesso!");
 } else {
   console.log("Firebase Admin SDK já está inicializado.");
 }
 
-
-// 🔹 Testando conexão com Firestore
 const adminDb = admin.firestore();
 adminDb
   .collection("test")
@@ -53,27 +45,52 @@ adminDb
   .then(() => console.log("✅ Conexão com Firestore funcionando!"))
   .catch((error) => console.error("❌ ERRO ao conectar ao Firestore:", error));
 
-
+// 🔹 Testar rota
 app.get("/", (req, res) => {
   res.send("🚀 Backend GPS-Tracker rodando!");
 });
 
-// 🔹 Implementação do WebSocket para atualização em tempo real
+// 🔹 WebSocket
 io.on("connection", (socket) => {
   console.log("🟢 Novo cliente conectado!");
 
-  socket.on("update-location", (data) => {
+  socket.on("update-location", async (data) => {
     console.log(`📍 Localização recebida:`, data);
-    
-    // 🔹 Envia os dados para todos os clientes conectados
-    io.emit("location-update", data);
+  
+    if (!data.userId || !data.latitude || !data.longitude) {
+      console.error("❌ Dados inválidos recebidos!", data);
+      return;
+    }
+  
+    try {
+      const userRef = admin.firestore().collection("locations").doc(data.userId);
+  
+      await userRef.set(
+        {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(), // Atualiza o timestamp
+        },
+        { merge: true } // 🔹 Mantém o documento e apenas atualiza os campos
+      );
+  
+      console.log(`✅ Localização atualizada no Firestore para usuário: ${data.userId}`);
+  
+      // Emitindo para os outros clientes
+      io.emit("location-update", data);
+    } catch (error) {
+      console.error("❌ Erro ao atualizar localização no Firestore:", error);
+    }
   });
+  
+  
 
   socket.on("disconnect", () => {
     console.log("🔴 Cliente desconectado");
   });
 });
 
-server.listen(4000, () => {
+
+server.listen(4000, "0.0.0.0", () => {
   console.log("🚀 Servidor rodando na porta 4000!");
 });

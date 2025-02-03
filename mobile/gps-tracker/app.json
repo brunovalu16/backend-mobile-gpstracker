@@ -26,6 +26,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "FIREBASE_API_KEY": "AIzaSyAJMzjpaceImv6Iu63oSKPa4ddlNu-DWAo",
+      "FIREBASE_AUTH_DOMAIN": "gps-tracker-9f672.firebaseapp.com",
+      "FIREBASE_PROJECT_ID": "gps-tracker-9f672",
+      "FIREBASE_STORAGE_BUCKET": "gps-tracker-9f672.firebasestorage.app",
+      "FIREBASE_MESSAGING_SENDER_ID": "1040387708454",
+      "FIREBASE_APP_ID": "1:1040387708454:web:9024b595db6e036c1df8e7",
+      "FIREBASE_MEASUREMENT_ID": "G-R3RTX6DYC2"
     }
   }
 }

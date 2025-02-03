@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste WebSocket</title>
+</head>
+<body>
+    <h2>Testando WebSocket</h2>
+    <script>
+        const socket = new WebSocket("ws://192.168.102.149:4000");
+
+        socket.onopen = () => console.log("✅ Conectado ao WebSocket!");
+        socket.onerror = (error) => console.error("❌ Erro na conexão WebSocket", error);
+        socket.onmessage = (event) => console.log("📡 Mensagem recebida:", event.data);
+    </script>
+</body>
+</html>
