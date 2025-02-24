@@ -16,6 +16,7 @@ const AppRoutes = () => {
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/vendedor/:id" element={<VendedorDetalhes />} />
         <Route path="/paradas" element={<Paradas />} />
+        <Route path="/roteirizacao" element={<Roteirizacao  />} />
       </Routes>
     </BrowserRouter>
   );
