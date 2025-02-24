@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.brunovalu16.gpstracker"
+      "bundleIdentifier": "com.brunovalu16.gpstracker",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDf1t3IoicicOFlnN099u2hlx1L3v1HoKw"
+      }
     },
     "android": {
       "package": "com.brunovalu16.gpstracker",
@@ -22,6 +25,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAxvc3MbXEdirPU7-0pNba8haZvd8ZBlqM"
+        }
       }
     },
     "web": {

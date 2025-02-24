@@ -1,15 +1,12 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
+# 🔹 Ignorar dependências instaladas pelo npm/yarn
 node_modules/
 
-# Expo
+# 🔹 Expo e arquivos de build temporários
 .expo/
 dist/
 web-build/
-expo-env.d.ts
 
-# Native
+# 🔹 Arquivos nativos e certificados sensíveis
 *.orig.*
 *.jks
 *.p8
@@ -17,20 +14,23 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
-# Metro
+# 🔹 Metro Bundler (React Native)
 .metro-health-check*
 
-# debug
+# 🔹 Arquivos de debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
+# 🔹 macOS e chaves privadas
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# 🔹 Arquivos de configuração local e envs (não devem ir para o Git)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
 
-# typescript
-*.tsbuildinfo
+# 🔹 Removido TypeScript (pois o projeto agora é JSX)

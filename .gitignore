@@ -1,5 +1,8 @@
 # Ignorar arquivo .env que contém variáveis sensíveis
 .env
+backend/.env
+dashboardweb/.env
+mobile/gps-tracker/.env
 
 # Ignorar o diretório node_modules
 node_modules/
