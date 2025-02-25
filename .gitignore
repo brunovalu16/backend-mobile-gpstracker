@@ -22,4 +22,5 @@ Thumbs.db
 package-lock.json
 yarn.lock
 serviceAccountKey.json
+backend/serviceAccountKey.json
 
