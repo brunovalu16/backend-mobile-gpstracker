@@ -5,7 +5,6 @@ import { Server } from "socket.io";
 import admin from "firebase-admin";
 import authRoutes from "./routes/auth.js";
 import gpsRoutes from "./routes/gps.js";
-import fs from "fs";
 
 // 🔹 Inicialização do app e servidor
 const app = express();
@@ -19,15 +18,8 @@ app.use(express.json());
 app.use("/gps", gpsRoutes);
 app.use("/auth", authRoutes);
 
-// 🔹 Lendo credenciais do Firebase
-const serviceAccountPath = "./serviceAccountKey.json";
-if (!fs.existsSync(serviceAccountPath)) {
-  console.error("❌ ERRO: Arquivo serviceAccountKey.json não encontrado!");
-  process.exit(1);
-}
-
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
-console.log("✅ Arquivo serviceAccountKey.json lido com sucesso!");
+// 🔹 Usando variável de ambiente para as credenciais do Firebase
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -50,8 +42,7 @@ app.get("/", (req, res) => {
   res.send("🚀 Backend GPS-Tracker rodando!");
 });
 
-
-//rota no backend para o dashboard web acessar o histórico do usuário
+// Rota no backend para o dashboard web acessar o histórico do usuário
 app.get("/gps/history/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -61,7 +52,7 @@ app.get("/gps/history/:userId", async (req, res) => {
     // 🔹 Certifique-se de que estamos acessando exatamente o caminho correto no Firestore
     const historyRef = admin.firestore()
       .collection("locations")
-      .doc(userId)  // Agora usando diretamente o `userId` correto
+      .doc(userId)
       .collection("history");
 
     const historySnapshot = await historyRef.orderBy("timestamp", "asc").get();
@@ -85,10 +76,6 @@ app.get("/gps/history/:userId", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar dados" });
   }
 });
-
-
-
-
 
 // 🔹 WebSocket
 io.on("connection", (socket) => {
@@ -134,8 +121,6 @@ io.on("connection", (socket) => {
     console.log(`🔴 Cliente desconectado: ID ${socket.id}`);
   });
 });
-
-
 
 server.listen(4000, "0.0.0.0", () => {
   console.log("🚀 Servidor rodando na porta 4000!");
