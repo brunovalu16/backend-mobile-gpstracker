@@ -19,7 +19,20 @@ app.use("/gps", gpsRoutes);
 app.use("/auth", authRoutes);
 
 // 🔹 Usando variável de ambiente para as credenciais do Firebase
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+import admin from "firebase-admin";
+
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  console.error("❌ ERRO: Variável FIREBASE_SERVICE_ACCOUNT não encontrada!");
+  process.exit(1);
+}
+
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT.replace(/\\n/g, '\n'));
+} catch (error) {
+  console.error("❌ ERRO ao fazer parse do JSON do Firebase:", error);
+  process.exit(1);
+}
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -27,15 +40,20 @@ if (!admin.apps.length) {
   });
   console.log("✅ Firebase Admin SDK inicializado com sucesso!");
 } else {
-  console.log("Firebase Admin SDK já está inicializado.");
+  console.log("✅ Firebase Admin SDK já estava inicializado.");
 }
 
 const adminDb = admin.firestore();
-adminDb
-  .collection("test")
-  .add({ message: "Firestore está funcionando!" })
-  .then(() => console.log("✅ Conexão com Firestore funcionando!"))
-  .catch((error) => console.error("❌ ERRO ao conectar ao Firestore:", error));
+
+(async () => {
+  try {
+    await adminDb.collection("test").add({ message: "Firestore está funcionando!" });
+    console.log("✅ Conexão com Firestore funcionando!");
+  } catch (error) {
+    console.error("❌ ERRO ao conectar ao Firestore:", error);
+  }
+})();
+
 
 // 🔹 Testar rota
 app.get("/", (req, res) => {
