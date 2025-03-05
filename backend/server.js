@@ -25,23 +25,23 @@ if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
 }
 
 // 🔹 Converte a string JSON da variável de ambiente para um objeto
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-  console.log("✅ Firebase Admin SDK inicializado com sucesso!");
-} else {
-  console.log("Firebase Admin SDK já está inicializado.");
+let serviceAccount;
+try {
+    // 🔹 Converte a string JSON da variável de ambiente para um objeto
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} catch (error) {
+    console.error("❌ ERRO ao analisar FIREBASE_SERVICE_ACCOUNT:", error);
+    process.exit(1);
 }
 
-const adminDb = admin.firestore();
-adminDb
-  .collection("test")
-  .add({ message: "Firestore está funcionando!" })
-  .then(() => console.log("✅ Conexão com Firestore funcionando!"))
-  .catch((error) => console.error("❌ ERRO ao conectar ao Firestore:", error));
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+    });
+    console.log("✅ Firebase Admin SDK inicializado com sucesso!");
+} else {
+    console.log("Firebase Admin SDK já está inicializado.");
+}
 
 
 // 🔹 Testar rota
