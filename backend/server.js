@@ -19,8 +19,6 @@ app.use("/gps", gpsRoutes);
 app.use("/auth", authRoutes);
 
 // 🔹 Usando variável de ambiente para as credenciais do Firebase
-import admin from "firebase-admin";
-
 if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
   console.error("❌ ERRO: Variável FIREBASE_SERVICE_ACCOUNT não encontrada!");
   process.exit(1);
