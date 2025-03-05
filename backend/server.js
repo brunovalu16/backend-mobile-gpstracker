@@ -25,7 +25,7 @@ if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
 }
 
 // 🔹 Converte a string JSON da variável de ambiente para um objeto
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT.replace(/\\n/g, "\n"));
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 if (!admin.apps.length) {
   admin.initializeApp({
