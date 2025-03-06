@@ -1,15 +1,15 @@
 import express from "express";
 import cors from "cors";
-import http from "http";
-import { Server } from "socket.io";
+//import http from "http";
+//import { Server } from "socket.io";
 import admin from "firebase-admin";
 import authRoutes from "./routes/auth.js";
 import gpsRoutes from "./routes/gps.js";
 
 // 🔹 Inicialização do app e servidor
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+//const server = http.createServer(app);
+//const io = new Server(server, { cors: { origin: "*" } });
 
 app.use(cors());
 app.use(express.json());
@@ -84,6 +84,12 @@ app.get("/gps/history/:userId", async (req, res) => {
   }
 });
 
+
+
+
+
+{/** 
+
 // 🔹 WebSocket
 io.on("connection", (socket) => {
   console.log(`🟢 Novo cliente conectado! ID: ${socket.id}`);
@@ -132,3 +138,5 @@ io.on("connection", (socket) => {
 server.listen(4000, "0.0.0.0", () => {
   console.log("🚀 Servidor rodando na porta 4000!");
 });
+
+*/}
