@@ -8,7 +8,8 @@ import { io } from "socket.io-client";
 import Mapa from "../components/Mapa";
 
 // 🔹 Configurar WebSocket corretamente
-const SERVER_URL = "http://192.168.102.162:4000"; // 🛑 Substituir pelo IP correto do backend
+const SERVER_URL = "wss://websocket-server-6kox.onrender.com"; // 🔥 Use wss:// para WebSocket seguro
+
 let socket = null;
 
 const HomeScreen = () => {
