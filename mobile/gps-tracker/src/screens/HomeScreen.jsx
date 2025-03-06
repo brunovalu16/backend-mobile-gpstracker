@@ -8,7 +8,8 @@ import { io } from "socket.io-client";
 import Mapa from "../components/Mapa";
 
 // 🔹 Configurar WebSocket corretamente
-const SERVER_URL = "wss://websocket-server-6kox.onrender.com"; // 🔥 Use wss:// para WebSocket seguro
+const SERVER_URL = "wss://websocket-server-6kox.onrender.com";
+ // 🔥 Use wss:// para WebSocket seguro
 
 let socket = null;
 
@@ -26,29 +27,35 @@ const HomeScreen = () => {
     if (currentUser) {
       setUser(currentUser);
     }
-
+  
     // 🔹 Conectar ao WebSocket ao entrar na tela
     socket = io(SERVER_URL, {
       transports: ["websocket"],
       reconnectionAttempts: 5,
+      reconnectionDelay: 5000, // 🔹 Aguarda 5s antes de tentar reconectar
     });
-
+  
     socket.on("connect", () => {
       console.log("🟢 Conectado ao WebSocket");
     });
-
+  
     socket.on("disconnect", () => {
       console.log("🔴 Desconectado do WebSocket");
     });
-
+  
     socket.on("location-update", (data) => {
       console.log("📡 Localização recebida do servidor:", data);
     });
-
+  
+    socket.on("ping", (msg) => {
+      console.log("🏓 Ping recebido do servidor:", msg);
+    });
+  
     return () => {
       socket?.disconnect();
     };
   }, []);
+  
 
   const handleStartTracking = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();

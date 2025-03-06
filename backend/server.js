@@ -84,6 +84,41 @@ app.get("/gps/history/:userId", async (req, res) => {
   }
 });
 
+//rota para receber e salvar as localizações no firebase
+app.post("/gps", async (req, res) => {
+  const { userId, latitude, longitude } = req.body;
+
+  if (!userId || !latitude || !longitude) {
+    return res.status(400).json({ error: "Dados inválidos!" });
+  }
+
+  try {
+    const userRef = admin.firestore().collection("locations").doc(userId);
+
+    // 🔹 Atualiza a última localização do usuário
+    await userRef.set({
+      latitude,
+      longitude,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    // 🔹 Adiciona ao histórico do usuário
+    const historyRef = userRef.collection("history");
+    await historyRef.add({
+      latitude,
+      longitude,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    console.log(`✅ Localização salva no Firebase para o usuário ${userId}`);
+    res.status(200).json({ message: "Localização salva com sucesso!" });
+  } catch (error) {
+    console.error("❌ Erro ao salvar localização no Firebase:", error);
+    res.status(500).json({ error: "Erro ao salvar dados" });
+  }
+});
+
+
 
 
 
